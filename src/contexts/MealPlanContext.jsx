@@ -174,15 +174,14 @@ export function MealPlanProvider({ children }) {
     if (day1 === day2) return; // No swap needed
 
     try {
-      setSaving(true);
-
       // Capture the current content before swap for optimistic update
       const meal1Content = meals.find(m => m.day_number === day1);
       const meal2Content = meals.find(m => m.day_number === day2);
 
       if (!meal1Content || !meal2Content) return;
 
-      // Optimistic update: Swap the content between the two days
+      // Instant optimistic update: Swap the content between the two days
+      // This happens immediately while @dnd-kit is animating
       setMeals(prevMeals =>
         prevMeals.map(meal => {
           if (meal.day_number === day1) {
@@ -205,7 +204,7 @@ export function MealPlanProvider({ children }) {
         })
       );
 
-      // Update database (swaps content, not day_number)
+      // Update database in background (swaps content, not day_number)
       const weekStartISO = formatISODate(currentWeekStart);
       const { error: swapError } = await mealPlanService.swapMeals(weekStartISO, day1, day2);
 
@@ -219,8 +218,6 @@ export function MealPlanProvider({ children }) {
 
       // Revert optimistic update by refetching
       fetchWeekMeals(currentWeekStart);
-    } finally {
-      setSaving(false);
     }
   };
 

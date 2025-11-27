@@ -54,9 +54,15 @@ export default {
           '0%': { opacity: '0', transform: 'translateY(-8px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+        'checkmark': {
+          '0%': { opacity: '0', transform: 'scale(0.5) rotate(-45deg)' },
+          '50%': { opacity: '1', transform: 'scale(1.1) rotate(0deg)' },
+          '100%': { opacity: '1', transform: 'scale(1) rotate(0deg)' },
+        },
       },
       animation: {
         'fade-in': 'fade-in 200ms ease-out',
+        'checkmark': 'checkmark 300ms cubic-bezier(0.34, 1.56, 0.64, 1)',
       },
     },
   },

@@ -40,7 +40,7 @@ export default function MealRow({ meal }) {
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition,
+    transition: transition || 'transform 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
     opacity: isDragging ? 0.5 : 1,
   };
 
@@ -260,7 +260,8 @@ export default function MealRow({ meal }) {
         className={`
           flex items-center gap-3 p-3 rounded-lg
           border border-neutral-800
-          hover:border-neutral-700 transition-all duration-200
+          hover:border-neutral-700
+          transition-all duration-300 ease-out
           ${isFocused ? 'border-red-600 ring-1 ring-red-600/50' : ''}
           ${isCooked ? 'bg-bg-cooked' : 'bg-neutral-900'}
           ${isDragging ? 'shadow-lg ring-2 ring-red-600/30' : ''}
@@ -268,7 +269,7 @@ export default function MealRow({ meal }) {
       >
         {/* Drag Handle */}
         <div
-          className="flex-shrink-0 cursor-grab active:cursor-grabbing text-neutral-600 hover:text-neutral-400 transition-colors flex items-center justify-center"
+          className="flex-shrink-0 cursor-grab active:cursor-grabbing text-neutral-600 hover:text-neutral-400 flex items-center justify-center"
           {...attributes}
           {...listeners}
           aria-label={`Drag to reorder ${dayName} meal`}
@@ -292,14 +293,15 @@ export default function MealRow({ meal }) {
           disabled={!hasMealName || saving}
           className={`
             flex-shrink-0 w-6 h-6 rounded
-            border-2 transition-all duration-200
+            border-2
             flex items-center justify-center
+            transition-all duration-300 ease-out
             ${
               hasMealName && !saving
-                ? 'border-neutral-600 hover:border-red-600 cursor-pointer'
+                ? 'border-neutral-600 hover:border-red-600 hover:scale-110 cursor-pointer'
                 : 'border-neutral-800 cursor-not-allowed opacity-40'
             }
-            ${isCooked ? 'bg-red-600 border-red-600' : 'bg-transparent'}
+            ${isCooked ? 'bg-red-600 border-red-600 scale-100' : 'bg-transparent scale-100'}
           `}
           aria-label={`Mark ${dayName} meal as ${isCooked ? 'not cooked' : 'cooked'}`}
           aria-checked={isCooked}
@@ -307,7 +309,7 @@ export default function MealRow({ meal }) {
         >
           {isCooked && (
             <svg
-              className="w-4 h-4 text-white"
+              className="w-4 h-4 text-white animate-checkmark"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -328,8 +330,9 @@ export default function MealRow({ meal }) {
           className={`
             flex-shrink-0 w-8 h-8
             flex items-center justify-center
-            rounded transition-colors duration-200
+            rounded
             font-semibold text-sm
+            transition-all duration-300 ease-out
             ${isCooked ? 'bg-neutral-900 text-neutral-600' : 'bg-neutral-800 text-neutral-400'}
           `}
           aria-label={`Day ${meal.day_number}, ${dayName}`}
@@ -351,7 +354,8 @@ export default function MealRow({ meal }) {
           className={`
             flex-1 bg-transparent border-none outline-none
             placeholder-neutral-600
-            text-base min-h-[44px] transition-colors duration-200
+            text-base min-h-[44px]
+            transition-all duration-300 ease-out
             ${isCooked ? 'text-text-cooked' : 'text-neutral-100'}
             ${saving ? 'opacity-50 cursor-wait' : 'cursor-text'}
           `}
