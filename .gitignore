@@ -7,7 +7,6 @@ supabase-schema.sql
 
 # Dependencies
 node_modules
-.claude/
 
 # Environment
 .env
@@ -36,3 +35,4 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+.claude/
