@@ -1,29 +1,46 @@
 import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { MealPlanProvider } from './contexts/MealPlanContext';
+import { MealPlanProvider, useMealPlan } from './contexts/MealPlanContext';
 import AuthForm from './components/auth/AuthForm';
 import Header from './components/layout/Header';
 import Container from './components/layout/Container';
 import Spinner from './components/ui/Spinner';
 import WeekNavigation from './components/meal-plan/WeekNavigation';
 import MealTable from './components/meal-plan/MealTable';
+import RecipeSuggestions from './components/suggestions/RecipeSuggestions';
 
 /**
- * Main app content (after auth)
- * Phase 2: Core meal planning functionality
+ * Main content wrapper that uses meal plan context
  */
-function AppContent() {
+function MainContent() {
+  const { currentWeekStart } = useMealPlan();
+
   return (
-    <MealPlanProvider>
+    <>
       <Header />
       <Container>
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {/* Week Navigation */}
           <WeekNavigation />
 
           {/* Weekly Meal Table */}
           <MealTable />
+
+          {/* Weekly Recipe Suggestions (Phase 6) */}
+          <RecipeSuggestions currentWeekStart={currentWeekStart} />
         </div>
       </Container>
+    </>
+  );
+}
+
+/**
+ * Main app content (after auth)
+ * Provides meal plan context to all components
+ */
+function AppContent() {
+  return (
+    <MealPlanProvider>
+      <MainContent />
     </MealPlanProvider>
   );
 }

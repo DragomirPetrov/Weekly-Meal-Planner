@@ -1,9 +1,11 @@
 #Files
 PRD.md
 README.md
+Recipes.json
 
 #DB
 supabase-schema.sql
+import-recipes.sql
 
 # Dependencies
 node_modules
