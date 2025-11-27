@@ -47,6 +47,56 @@ export const mealPlanService = {
   },
 
   /**
+   * Restore missing meal rows for a week
+   * Checks which day_numbers are missing (1-7) and creates them
+   * @param {Date} weekStartDate - Monday of the week
+   * @returns {Promise<{error: Error|null}>}
+   */
+  async restoreMissingRows(weekStartDate) {
+    const weekStr = formatISODate(weekStartDate);
+
+    try {
+      // Get existing meals
+      const { data: existingMeals, error: fetchError } = await supabase
+        .from('meal_plans')
+        .select('day_number')
+        .eq('week_start_date', weekStr);
+
+      if (fetchError) {
+        throw fetchError;
+      }
+
+      const existingDays = existingMeals.map(m => m.day_number);
+      const missingDays = [1, 2, 3, 4, 5, 6, 7].filter(day => !existingDays.includes(day));
+
+      if (missingDays.length === 0) {
+        return { error: null }; // Nothing to restore
+      }
+
+      // Create missing rows
+      const missingMeals = missingDays.map(day => ({
+        week_start_date: weekStr,
+        day_number: day,
+        meal_name: null,
+        is_cooked: false,
+      }));
+
+      const { error: insertError } = await supabase
+        .from('meal_plans')
+        .insert(missingMeals);
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      return { error: null };
+    } catch (error) {
+      console.error('Error restoring missing rows:', error);
+      return { error };
+    }
+  },
+
+  /**
    * Update a meal entry
    * @param {Date} weekStartDate - Monday of the week
    * @param {number} dayNumber - 1-7 (Monday-Sunday)
@@ -72,8 +122,9 @@ export const mealPlanService = {
   },
 
   /**
-   * Swap two meals by swapping their day_number values
-   * Uses 3-step process to avoid UNIQUE constraint violation
+   * Swap two meals by swapping their content (not day_number)
+   * Updates meal_name and is_cooked between two days
+   * This avoids UNIQUE constraint and CHECK constraint violations
    * @param {Date} weekStartDate - Monday of the week
    * @param {number} day1 - First day number
    * @param {number} day2 - Second day number
@@ -81,32 +132,61 @@ export const mealPlanService = {
    */
   async swapMeals(weekStartDate, day1, day2) {
     const weekStr = formatISODate(weekStartDate);
-    const tempDay = 100; // Temporary value outside 1-7 range
 
     try {
-      // Step 1: day1 → temp
-      await supabase
+      // Step 1: Fetch both meal records
+      const { data: meals, error: fetchError } = await supabase
         .from('meal_plans')
-        .update({ day_number: tempDay })
+        .select('*')
+        .eq('week_start_date', weekStr)
+        .in('day_number', [day1, day2]);
+
+      if (fetchError) {
+        console.error('Error fetching meals for swap:', fetchError);
+        throw fetchError;
+      }
+
+      if (!meals || meals.length !== 2) {
+        throw new Error('Could not find both meals to swap');
+      }
+
+      const meal1 = meals.find(m => m.day_number === day1);
+      const meal2 = meals.find(m => m.day_number === day2);
+
+      // Step 2: Swap content of day1 with content of day2
+      // Update day1 with day2's content
+      const { error: error1 } = await supabase
+        .from('meal_plans')
+        .update({
+          meal_name: meal2.meal_name,
+          is_cooked: meal2.is_cooked,
+        })
         .eq('week_start_date', weekStr)
         .eq('day_number', day1);
 
-      // Step 2: day2 → day1
-      await supabase
+      if (error1) {
+        console.error('Error updating meal 1:', error1);
+        throw error1;
+      }
+
+      // Step 3: Update day2 with day1's content
+      const { error: error2 } = await supabase
         .from('meal_plans')
-        .update({ day_number: day1 })
+        .update({
+          meal_name: meal1.meal_name,
+          is_cooked: meal1.is_cooked,
+        })
         .eq('week_start_date', weekStr)
         .eq('day_number', day2);
 
-      // Step 3: temp → day2
-      await supabase
-        .from('meal_plans')
-        .update({ day_number: day2 })
-        .eq('week_start_date', weekStr)
-        .eq('day_number', tempDay);
+      if (error2) {
+        console.error('Error updating meal 2:', error2);
+        throw error2;
+      }
 
       return { error: null };
     } catch (error) {
+      console.error('Swap meals failed:', error);
       return { error };
     }
   },

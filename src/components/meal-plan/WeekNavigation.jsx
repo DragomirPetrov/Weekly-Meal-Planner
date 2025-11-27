@@ -39,9 +39,18 @@ export default function WeekNavigation() {
 
       {/* Week Display & Today Button */}
       <div className="flex flex-col sm:flex-row items-center gap-2">
-        <h2 className="text-lg font-semibold text-neutral-100 text-center">
-          {weekDisplay}
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-lg font-semibold text-neutral-100 text-center">
+            {weekDisplay}
+          </h2>
+
+          {/* Show "This Week" badge when viewing current week */}
+          {isThisWeek && (
+            <span className="px-2 py-1 text-xs font-medium bg-red-600/20 text-red-400 rounded">
+              This Week
+            </span>
+          )}
+        </div>
 
         {/* Show "Today" button only when not viewing current week */}
         {!isThisWeek && (
