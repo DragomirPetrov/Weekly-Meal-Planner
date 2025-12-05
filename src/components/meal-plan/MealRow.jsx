@@ -5,14 +5,15 @@ import { useMealPlan } from '../../contexts/MealPlanContext';
 import { historyService } from '../../services/history.service';
 import { DAYS_OF_WEEK } from '../../utils/constants';
 import MealAutocomplete from './MealAutocomplete';
+import RecipeUrlModal from './RecipeUrlModal';
 
 /**
  * MealRow Component
  * Single row representing one day's meal in the weekly plan
  *
  * Features:
- * - Day number display (1-7)
  * - Inline editable meal name field
+ * - Recipe URL link icon (with modal for editing)
  * - Auto-save on blur or Enter key
  * - Character limit (100 chars per PRD)
  * - Touch-friendly for mobile (16px minimum font size)
@@ -49,9 +50,12 @@ export default function MealRow({ meal }) {
   const [isFocused, setIsFocused] = useState(false);
 
   // Autocomplete state
-  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState([]); // Array of {meal_name, recipe_url} objects
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  // Recipe URL modal state
+  const [showUrlModal, setShowUrlModal] = useState(false);
 
   const inputRef = useRef(null);
   const debounceTimerRef = useRef(null);
@@ -133,19 +137,26 @@ export default function MealRow({ meal }) {
 
   /**
    * Handle autocomplete selection
+   * suggestion is now an object: { meal_name, recipe_url }
    */
-  const handleSelectSuggestion = (suggestion) => {
-    setMealName(suggestion);
+  const handleSelectSuggestion = async (suggestion) => {
+    setMealName(suggestion.meal_name);
     setShowAutocomplete(false);
     setSelectedIndex(-1);
 
-    // Save immediately after selection
-    setTimeout(async () => {
-      if (suggestion.trim() !== (meal.meal_name || '')) {
-        await updateMeal(meal.day_number, { meal_name: suggestion.trim() });
-      }
-      inputRef.current?.blur();
-    }, 0);
+    // Prepare updates object
+    const updates = { meal_name: suggestion.meal_name.trim() };
+
+    // Add recipe_url if it exists in history
+    if (suggestion.recipe_url) {
+      updates.recipe_url = suggestion.recipe_url;
+    }
+
+    // Always save when selecting from autocomplete (meal name OR URL might have changed)
+    await updateMeal(meal.day_number, updates);
+
+    // Blur input to complete the interaction
+    inputRef.current?.blur();
   };
 
   /**
@@ -254,8 +265,40 @@ export default function MealRow({ meal }) {
     await updateMeal(meal.day_number, { is_cooked: newCookedState });
   };
 
+  /**
+   * Handle recipe URL save from modal
+   */
+  const handleSaveRecipeUrl = async (url) => {
+    await updateMeal(meal.day_number, { recipe_url: url });
+  };
+
+  /**
+   * Handle recipe URL icon click
+   * If URL exists, open in new tab
+   * If no URL, open modal to add one
+   */
+  const handleRecipeUrlClick = (e) => {
+    e.stopPropagation(); // Prevent input focus
+
+    if (meal.recipe_url) {
+      // If URL exists, open it
+      window.open(meal.recipe_url, '_blank', 'noopener,noreferrer');
+    } else {
+      // If no URL, open modal to add one
+      setShowUrlModal(true);
+    }
+  };
+
+  /**
+   * Handle edit URL action (from secondary button)
+   */
+  const handleEditUrl = (e) => {
+    e.stopPropagation();
+    setShowUrlModal(true);
+  };
+
   return (
-    <div ref={setNodeRef} style={style} className="relative">
+    <div ref={setNodeRef} style={style} className="relative group">
       <div
         className={`
           flex items-center gap-3 p-3 rounded-lg
@@ -292,7 +335,7 @@ export default function MealRow({ meal }) {
           onClick={handleToggleCooked}
           disabled={!hasMealName || saving}
           className={`
-            flex-shrink-0 w-6 h-6 rounded
+            flex-shrink-0 w-5 h-5 rounded
             border-2
             flex items-center justify-center
             transition-all duration-300 ease-out
@@ -309,7 +352,7 @@ export default function MealRow({ meal }) {
         >
           {isCooked && (
             <svg
-              className="w-4 h-4 text-white animate-checkmark"
+              className="w-3.5 h-3.5 text-white animate-checkmark"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -318,27 +361,12 @@ export default function MealRow({ meal }) {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={3}
+                strokeWidth={2.5}
                 d="M5 13l4 4L19 7"
               />
             </svg>
           )}
         </button>
-
-        {/* Day Number */}
-        <div
-          className={`
-            flex-shrink-0 w-8 h-8
-            flex items-center justify-center
-            rounded
-            font-semibold text-sm
-            transition-all duration-300 ease-out
-            ${isCooked ? 'bg-neutral-900 text-neutral-600' : 'bg-neutral-800 text-neutral-400'}
-          `}
-          aria-label={`Day ${meal.day_number}, ${dayName}`}
-        >
-          {meal.day_number}
-        </div>
 
         {/* Editable Meal Name Input */}
         <input
@@ -364,6 +392,52 @@ export default function MealRow({ meal }) {
           autoComplete="off"
         />
 
+        {/* Recipe URL Icon */}
+        {hasMealName && (
+          <div className="relative flex-shrink-0">
+            <button
+              type="button"
+              onClick={handleRecipeUrlClick}
+              className={`
+                p-2 rounded transition-all duration-200
+                ${meal.recipe_url
+                  ? 'text-red-600 hover:text-red-500 hover:bg-red-600/10'
+                  : 'text-neutral-600 hover:text-neutral-400 hover:bg-neutral-800'
+                }
+              `}
+              aria-label={meal.recipe_url ? 'Open recipe link' : 'Add recipe link'}
+              title={meal.recipe_url ? 'Click to open recipe' : 'Add recipe link'}
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+            </button>
+
+            {/* Edit URL option - appears on hover if URL exists */}
+            {meal.recipe_url && (
+              <button
+                type="button"
+                onClick={handleEditUrl}
+                className="absolute -bottom-6 right-0 text-xs text-neutral-500 hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                title="Edit recipe URL"
+              >
+                Edit
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Character Count (shown when focused and approaching limit) */}
         {isFocused && mealName.length > 80 && (
           <div className="flex-shrink-0 text-xs text-neutral-500">
@@ -382,6 +456,15 @@ export default function MealRow({ meal }) {
           inputRef={inputRef}
         />
       )}
+
+      {/* Recipe URL Modal */}
+      <RecipeUrlModal
+        isOpen={showUrlModal}
+        onClose={() => setShowUrlModal(false)}
+        onSave={handleSaveRecipeUrl}
+        currentUrl={meal.recipe_url}
+        mealName={mealName}
+      />
     </div>
   );
 }

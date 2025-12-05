@@ -10,9 +10,10 @@ import { useEffect, useRef } from 'react';
  * - Touch-friendly tap targets (44px height per PRD)
  * - Smooth fade-in animation (200ms per PRD)
  * - Click outside to dismiss
+ * - Shows link icon for meals with recipe URLs
  *
  * @param {Object} props
- * @param {string[]} props.suggestions - Array of meal name suggestions
+ * @param {Array<{meal_name: string, recipe_url: string|null}>} props.suggestions - Array of meal suggestions with URLs
  * @param {number} props.selectedIndex - Currently highlighted suggestion index
  * @param {Function} props.onSelect - Callback when suggestion is selected
  * @param {Function} props.onClose - Callback to close dropdown
@@ -87,11 +88,14 @@ export default function MealAutocomplete({
         <button
           key={index}
           type="button"
-          onClick={() => onSelect(suggestion)}
+          onMouseDown={(e) => {
+            e.preventDefault(); // Prevent blur event from firing
+            onSelect(suggestion);
+          }}
           className={`
             w-full px-4 py-3 text-left text-base
             transition-colors cursor-pointer
-            min-h-[44px] flex items-center
+            min-h-[44px] flex items-center justify-between
             ${
               index === selectedIndex
                 ? 'bg-red-600 text-white'
@@ -102,7 +106,25 @@ export default function MealAutocomplete({
           role="option"
           aria-selected={index === selectedIndex}
         >
-          {suggestion}
+          <span>{suggestion.meal_name}</span>
+
+          {/* Show link icon if recipe URL exists */}
+          {suggestion.recipe_url && (
+            <svg
+              className="w-4 h-4 text-neutral-400 flex-shrink-0 ml-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+              />
+            </svg>
+          )}
         </button>
       ))}
     </div>

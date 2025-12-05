@@ -98,6 +98,9 @@ export function MealPlanProvider({ children }) {
     try {
       setSaving(true);
 
+      // Get the current meal BEFORE optimistic update (to access existing recipe_url)
+      const currentMeal = meals.find(m => m.day_number === dayNumber);
+
       // Optimistic update: Update UI immediately
       setMeals(prevMeals =>
         prevMeals.map(meal =>
@@ -111,9 +114,19 @@ export function MealPlanProvider({ children }) {
       const weekStartISO = formatISODate(currentWeekStart);
       await mealPlanService.updateMeal(weekStartISO, dayNumber, updates);
 
-      // If meal name was updated, add to history for autocomplete
-      if (updates.meal_name && updates.meal_name.trim()) {
-        await historyService.upsertMealHistory(updates.meal_name.trim());
+      // Save to history if meal name exists (either updated or already set)
+      const mealNameToSave = updates.meal_name || currentMeal?.meal_name;
+      if (mealNameToSave && mealNameToSave.trim()) {
+        // Determine the recipe_url to save to history
+        // Priority: updates.recipe_url > currentMeal.recipe_url
+        const recipeUrl = updates.recipe_url !== undefined
+          ? updates.recipe_url
+          : currentMeal?.recipe_url;
+
+        await historyService.upsertMealHistory(
+          mealNameToSave.trim(),
+          recipeUrl
+        );
       }
 
     } catch (err) {
@@ -190,6 +203,7 @@ export function MealPlanProvider({ children }) {
               ...meal,
               meal_name: meal2Content.meal_name,
               is_cooked: meal2Content.is_cooked,
+              recipe_url: meal2Content.recipe_url,
             };
           }
           if (meal.day_number === day2) {
@@ -198,6 +212,7 @@ export function MealPlanProvider({ children }) {
               ...meal,
               meal_name: meal1Content.meal_name,
               is_cooked: meal1Content.is_cooked,
+              recipe_url: meal1Content.recipe_url,
             };
           }
           return meal;

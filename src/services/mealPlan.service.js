@@ -37,6 +37,7 @@ export const mealPlanService = {
       day_number: i + 1,
       meal_name: null,
       is_cooked: false,
+      recipe_url: null,
     }));
 
     const { error } = await supabase
@@ -79,6 +80,7 @@ export const mealPlanService = {
         day_number: day,
         meal_name: null,
         is_cooked: false,
+        recipe_url: null,
       }));
 
       const { error: insertError } = await supabase
@@ -160,6 +162,7 @@ export const mealPlanService = {
         .update({
           meal_name: meal2.meal_name,
           is_cooked: meal2.is_cooked,
+          recipe_url: meal2.recipe_url,
         })
         .eq('week_start_date', weekStr)
         .eq('day_number', day1);
@@ -175,6 +178,7 @@ export const mealPlanService = {
         .update({
           meal_name: meal1.meal_name,
           is_cooked: meal1.is_cooked,
+          recipe_url: meal1.recipe_url,
         })
         .eq('week_start_date', weekStr)
         .eq('day_number', day2);

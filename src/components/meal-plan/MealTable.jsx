@@ -40,8 +40,8 @@ export default function MealTable() {
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 200, // 200ms delay for touch (prevents conflict with scrolling)
-        tolerance: 8, // 8px tolerance
+        distance: 8, // 8px drag distance - prevents conflict with scrolling and enables browser simulation
+        tolerance: 5, // 5px tolerance for touch precision
       },
     })
   );
