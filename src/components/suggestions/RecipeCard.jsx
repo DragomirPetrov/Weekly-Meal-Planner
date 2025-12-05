@@ -108,57 +108,56 @@ export default function RecipeCard({ recipe }) {
   };
 
   return (
-    <div className="bg-neutral-900 rounded-lg border border-neutral-800 p-4 transition-all duration-300 ease-out hover:border-neutral-700 hover:shadow-lg flex flex-col gap-3">
-      {/* Recipe Name */}
-      <h3 className="text-base font-semibold text-neutral-100 line-clamp-2 min-h-[3rem]">
-        {recipe.name}
-      </h3>
+    <div className="bg-bg-card rounded-lg border border-neutral-800/50 p-5 transition-all duration-300 ease-out hover:border-neutral-700/70 shadow-card hover:shadow-card-hover">
+      <div className="flex items-center justify-between gap-6">
+        {/* Left: Recipe Name and Cuisine Badge */}
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg font-bold text-neutral-100 mb-2">
+            {recipe.name}
+          </h3>
+          <div className="flex items-center gap-3">
+            {/* Cuisine Badge */}
+            <span
+              className={`
+                px-2.5 py-1 text-xs font-medium rounded border
+                ${getCuisineBadgeClass()}
+              `}
+            >
+              {getCuisineName()}
+            </span>
+            {/* Star Rating */}
+            {renderStars()}
+          </div>
+        </div>
 
-      {/* Cuisine Badge & Rating Row */}
-      <div className="flex items-center justify-between gap-3">
-        {/* Cuisine Badge */}
-        <span
-          className={`
-            px-2.5 py-1 text-xs font-medium rounded border
-            ${getCuisineBadgeClass()}
-          `}
-        >
-          {getCuisineName()}
-        </span>
+        {/* Right: Action Buttons */}
+        <div className="flex items-center gap-3 flex-shrink-0">
+          {/* Add Button */}
+          <button
+            className="p-2 rounded hover:bg-neutral-800 transition-colors"
+            aria-label="Add to meal plan"
+            title="Add to meal plan"
+          >
+            <svg className="w-5 h-5 text-neutral-400 hover:text-neutral-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+          </button>
 
-        {/* Star Rating */}
-        {renderStars()}
+          {/* View Recipe Button */}
+          <a
+            href={recipe.recipe_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2 rounded hover:bg-neutral-800 transition-colors"
+            aria-label="View recipe"
+            title="View recipe"
+          >
+            <svg className="w-5 h-5 text-neutral-400 hover:text-neutral-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+        </div>
       </div>
-
-      {/* View Recipe Button */}
-      <a
-        href={recipe.recipe_url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="
-          mt-2 w-full px-4 py-2 rounded
-          bg-primary text-white text-sm font-medium
-          hover:bg-primary-hover active:bg-primary-active
-          transition-all duration-300 ease-out
-          flex items-center justify-center gap-2
-        "
-      >
-        View Recipe
-        <svg
-          className="w-4 h-4"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-          />
-        </svg>
-      </a>
     </div>
   );
 }

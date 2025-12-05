@@ -1,5 +1,15 @@
 # Weekly Meal Planner - TODO
 
+**What's left**
+
+- [ ] Remove Sign UP
+- [ ] Remove Log Out
+- [ ] Backend
+- [ ] Add recipe from suggestions on the first available place in the current week
+- [ ] Unit Tests
+
+---
+
 Implementation roadmap for Phase 7 and Phase 8.
 
 ---

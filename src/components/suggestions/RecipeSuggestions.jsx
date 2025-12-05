@@ -57,10 +57,15 @@ export default function RecipeSuggestions({ currentWeekStart }) {
   // Loading state
   if (loading) {
     return (
-      <div className="mt-12 bg-neutral-900 rounded-lg border border-neutral-800 p-8">
-        <h2 className="text-xl font-semibold text-neutral-100 mb-6">
-          Weekly Recipe Suggestions
-        </h2>
+      <div className="mt-16">
+        <div className="flex items-center gap-3 mb-6">
+          <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+          <h2 className="text-2xl font-bold text-neutral-100 tracking-tight">
+            Weekly Suggestions
+          </h2>
+        </div>
         <div className="flex flex-col items-center justify-center py-12 space-y-4">
           <Spinner size="large" />
           <p className="text-neutral-400 text-sm">Loading recipe suggestions...</p>
@@ -72,10 +77,15 @@ export default function RecipeSuggestions({ currentWeekStart }) {
   // Error state
   if (error) {
     return (
-      <div className="mt-12 bg-neutral-900 rounded-lg border border-neutral-800 p-8">
-        <h2 className="text-xl font-semibold text-neutral-100 mb-6">
-          Weekly Recipe Suggestions
-        </h2>
+      <div className="mt-16">
+        <div className="flex items-center gap-3 mb-6">
+          <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+          <h2 className="text-2xl font-bold text-neutral-100 tracking-tight">
+            Weekly Suggestions
+          </h2>
+        </div>
         <ErrorMessage
           message={error}
           onDismiss={fetchSuggestions}
@@ -88,10 +98,15 @@ export default function RecipeSuggestions({ currentWeekStart }) {
   // No recipes state (shouldn't happen, but handle gracefully)
   if (recipes.length === 0) {
     return (
-      <div className="mt-12 bg-neutral-900 rounded-lg border border-neutral-800 p-8">
-        <h2 className="text-xl font-semibold text-neutral-100 mb-6">
-          Weekly Recipe Suggestions
-        </h2>
+      <div className="mt-16">
+        <div className="flex items-center gap-3 mb-6">
+          <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          </svg>
+          <h2 className="text-2xl font-bold text-neutral-100 tracking-tight">
+            Weekly Suggestions
+          </h2>
+        </div>
         <div className="text-center py-12">
           <p className="text-neutral-400">No recipe suggestions available.</p>
           <button
@@ -106,29 +121,22 @@ export default function RecipeSuggestions({ currentWeekStart }) {
   }
 
   return (
-    <div className="mt-12 bg-neutral-900 rounded-lg border border-neutral-800 p-6 sm:p-8">
+    <div className="mt-16">
       {/* Section Header */}
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold text-neutral-100 mb-2">
-          Weekly Recipe Suggestions
+      <div className="flex items-center gap-3 mb-6">
+        <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+        <h2 className="text-2xl font-bold text-neutral-100 tracking-tight">
+          Weekly Suggestions
         </h2>
-        <p className="text-sm text-neutral-400">
-          Discover new pescatarian recipes for this week
-        </p>
       </div>
 
-      {/* Recipe Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Recipe Cards - Vertical List */}
+      <div className="space-y-4">
         {recipes.map((recipe) => (
           <RecipeCard key={recipe.id} recipe={recipe} />
         ))}
-      </div>
-
-      {/* Helpful Info */}
-      <div className="mt-6 pt-6 border-t border-neutral-800 text-center">
-        <p className="text-xs text-neutral-600">
-          New suggestions generated weekly " Click any recipe to view full details
-        </p>
       </div>
     </div>
   );

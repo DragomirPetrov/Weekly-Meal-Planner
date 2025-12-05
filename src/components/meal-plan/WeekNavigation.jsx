@@ -23,42 +23,44 @@ export default function WeekNavigation() {
   const isThisWeek = isCurrentWeek();
 
   return (
-    <div className="flex items-center justify-between gap-4 mb-6">
-      {/* Previous Week Button */}
-      <Button
-        variant="secondary"
-        onClick={goToPreviousWeek}
-        className="px-4 py-2"
-        aria-label="Previous week"
-      >
-        <span className="text-lg">←</span>
-        <span className="ml-2 hidden sm:inline">Previous</span>
-      </Button>
+    <div className="bg-bg-card rounded-lg border border-neutral-800/50 p-5 mb-6 shadow-card">
+      <div className="flex items-center justify-between">
+        {/* Previous Week Button */}
+        <button
+          onClick={goToPreviousWeek}
+          className="p-2 text-neutral-400 hover:text-neutral-100 transition-colors"
+          aria-label="Previous week"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
 
-      {/* Week Display */}
-      <div className="flex flex-col items-center gap-1">
-        <h2 className="text-lg font-semibold text-neutral-100 text-center">
-          {weekDisplay}
-        </h2>
+        {/* Week Display */}
+        <div className="flex flex-col items-center gap-1">
+          <h2 className="text-lg font-bold text-neutral-100 text-center tracking-tight">
+            {weekDisplay}
+          </h2>
 
-        {/* Show "This Week" badge when viewing current week */}
-        {isThisWeek && (
-          <span className="px-2 py-1 text-xs font-medium bg-red-600/20 text-red-400 rounded">
-            This Week
-          </span>
-        )}
+          {/* Show "Current week" label when viewing current week */}
+          {isThisWeek && (
+            <span className="text-xs text-amber-500">
+              Current week
+            </span>
+          )}
+        </div>
+
+        {/* Next Week Button */}
+        <button
+          onClick={goToNextWeek}
+          className="p-2 text-neutral-400 hover:text-neutral-100 transition-colors"
+          aria-label="Next week"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
-
-      {/* Next Week Button */}
-      <Button
-        variant="secondary"
-        onClick={goToNextWeek}
-        className="px-4 py-2"
-        aria-label="Next week"
-      >
-        <span className="hidden sm:inline mr-2">Next</span>
-        <span className="text-lg">→</span>
-      </Button>
     </div>
   );
 }

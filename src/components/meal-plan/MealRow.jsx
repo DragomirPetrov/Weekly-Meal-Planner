@@ -301,32 +301,19 @@ export default function MealRow({ meal }) {
     <div ref={setNodeRef} style={style} className="relative group">
       <div
         className={`
-          flex items-center gap-3 p-3 rounded-lg
-          border border-neutral-800
-          hover:border-neutral-700
+          flex items-center gap-4 px-3.5 py-3.5 rounded-lg
+          border border-neutral-800/50
+          hover:border-neutral-700/70
           transition-all duration-300 ease-out
-          ${isFocused ? 'border-red-600 ring-1 ring-red-600/50' : ''}
-          ${isCooked ? 'bg-bg-cooked' : 'bg-neutral-900'}
-          ${isDragging ? 'shadow-lg ring-2 ring-red-600/30' : ''}
+          shadow-card hover:shadow-card-hover
+          ${isFocused ? 'border-red-600 ring-1 ring-red-600/50 shadow-elevated' : ''}
+          ${isCooked ? 'bg-bg-card' : 'bg-bg-card'}
+          ${isDragging ? 'shadow-elevated ring-2 ring-red-600/30' : ''}
         `}
       >
-        {/* Drag Handle */}
-        <div
-          className="flex-shrink-0 cursor-grab active:cursor-grabbing text-neutral-600 hover:text-neutral-400 flex items-center justify-center"
-          {...attributes}
-          {...listeners}
-          aria-label={`Drag to reorder ${dayName} meal`}
-          role="button"
-          tabIndex={0}
-        >
-          <svg
-            className="w-5 h-5"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M9 3h2v2H9V3zm0 4h2v2H9V7zm0 4h2v2H9v-2zm0 4h2v2H9v-2zm0 4h2v2H9v-2zM13 3h2v2h-2V3zm0 4h2v2h-2V7zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2zm0 4h2v2h-2v-2z" />
-          </svg>
+        {/* Day Number */}
+        <div className="flex-shrink-0 w-6 text-center">
+          <span className="text-neutral-400 font-medium">{meal.day_number}</span>
         </div>
 
         {/* Checkbox for Meal Completion */}
@@ -339,6 +326,7 @@ export default function MealRow({ meal }) {
             border-2
             flex items-center justify-center
             transition-all duration-300 ease-out
+            self-center
             ${
               hasMealName && !saving
                 ? 'border-neutral-600 hover:border-red-600 hover:scale-110 cursor-pointer'
@@ -382,7 +370,7 @@ export default function MealRow({ meal }) {
           className={`
             flex-1 bg-transparent border-none outline-none
             placeholder-neutral-600
-            text-base min-h-[44px]
+            text-base min-h-[44px] font-medium
             transition-all duration-300 ease-out
             ${isCooked ? 'text-text-cooked' : 'text-neutral-100'}
             ${saving ? 'opacity-50 cursor-wait' : 'cursor-text'}

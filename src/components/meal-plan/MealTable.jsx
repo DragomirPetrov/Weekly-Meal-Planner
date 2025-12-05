@@ -110,7 +110,7 @@ export default function MealTable() {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <div className="space-y-3">
+      <div className="space-y-4">
         {/* Table Header (optional, for context) */}
         <div className="sr-only">
           <h3>Weekly Meal Plan</h3>

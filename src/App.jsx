@@ -1,7 +1,6 @@
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { MealPlanProvider, useMealPlan } from './contexts/MealPlanContext';
 import AuthForm from './components/auth/AuthForm';
-import Header from './components/layout/Header';
 import Container from './components/layout/Container';
 import Spinner from './components/ui/Spinner';
 import WeekNavigation from './components/meal-plan/WeekNavigation';
@@ -15,21 +14,23 @@ function MainContent() {
   const { currentWeekStart } = useMealPlan();
 
   return (
-    <>
-      <Header />
-      <Container>
-        <div className="max-w-5xl mx-auto">
-          {/* Week Navigation */}
-          <WeekNavigation />
+    <Container>
+      <div className="max-w-5xl mx-auto">
+        {/* Page Title */}
+        <h1 className="text-4xl font-bold text-primary mb-8 tracking-tight">
+          Weekly Meal Planner
+        </h1>
 
-          {/* Weekly Meal Table */}
-          <MealTable />
+        {/* Week Navigation */}
+        <WeekNavigation />
 
-          {/* Weekly Recipe Suggestions (Phase 6) */}
-          <RecipeSuggestions currentWeekStart={currentWeekStart} />
-        </div>
-      </Container>
-    </>
+        {/* Weekly Meal Table */}
+        <MealTable />
+
+        {/* Weekly Recipe Suggestions (Phase 6) */}
+        <RecipeSuggestions currentWeekStart={currentWeekStart} />
+      </div>
+    </Container>
   );
 }
 
