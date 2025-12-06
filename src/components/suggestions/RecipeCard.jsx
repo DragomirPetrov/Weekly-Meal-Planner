@@ -27,7 +27,7 @@ export default function RecipeCard({ recipe, onAdd }) {
 
   return (
     <div className="bg-bg-card rounded-lg border border-border pl-3.5 pr-4 py-3.5 transition-all duration-300 ease-out hover:border-border-secondary hover:bg-bg-hover/70 shadow-card hover:shadow-card-hover">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center gap-4">
         {/* Left: Recipe Name and Cuisine Badge */}
         <div className="flex flex-col gap-2 flex-1 min-w-0">
           <h3 className="text-base font-normal text-text-primary">
@@ -40,7 +40,7 @@ export default function RecipeCard({ recipe, onAdd }) {
         </div>
 
         {/* Right: Action Buttons */}
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-2 flex-shrink-0 ml-auto">
           {/* Add Button */}
           <button
             onClick={() => onAdd && onAdd(recipe)}
