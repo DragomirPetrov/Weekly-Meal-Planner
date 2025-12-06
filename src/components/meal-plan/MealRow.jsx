@@ -401,7 +401,7 @@ function MealRow({ meal }) {
           placeholder="Add meal name..."
           disabled={isSaving}
           className={`
-            flex-1 bg-transparent outline-none
+            flex-1 max-w-[200px] sm:max-w-none bg-transparent outline-none
             placeholder-text-placeholder
             text-base min-h-[44px] font-medium
             transition-all duration-300 ease-out
