@@ -401,7 +401,7 @@ function MealRow({ meal }) {
           placeholder="Add meal name..."
           disabled={isSaving}
           className={`
-            flex-1 max-w-[200px] sm:max-w-none bg-transparent outline-none
+            flex-1 max-w-[220px] sm:max-w-none bg-transparent outline-none
             placeholder-text-placeholder
             text-base min-h-[44px] font-medium
             transition-all duration-300 ease-out
@@ -423,7 +423,7 @@ function MealRow({ meal }) {
               type="button"
               onClick={handleRecipeUrlClick}
               className={`
-                p-2 rounded transition-all duration-200
+                p-1 sm:p-2 rounded transition-all duration-200
                 ${meal.recipe_url
                   ? 'text-primary hover:text-primary-hover hover:bg-primary/10'
                   : 'text-text-tertiary hover:text-text-secondary hover:bg-bg-elevated'
