@@ -302,18 +302,16 @@ export default function MealRow({ meal }) {
       <div
         className={`
           flex items-center gap-4 px-3.5 py-3.5 rounded-lg
-          border border-neutral-800/50
-          hover:border-neutral-700/70
-          transition-all duration-300 ease-out
+          border transition-all duration-300 ease-out
           shadow-card hover:shadow-card-hover
-          ${isFocused ? 'border-red-600 ring-1 ring-red-600/50 shadow-elevated' : ''}
-          ${isCooked ? 'bg-bg-card' : 'bg-bg-card'}
-          ${isDragging ? 'shadow-elevated ring-2 ring-red-600/30' : ''}
+          ${isFocused ? 'border-primary ring-1 ring-primary/50 shadow-elevated' : ''}
+          ${isCooked ? 'bg-bg-card opacity-50' : 'bg-bg-card'}
+          ${isDragging ? 'shadow-elevated ring-2 ring-primary/30' : 'border-border hover:border-border-secondary'}
         `}
       >
         {/* Day Number */}
         <div className="flex-shrink-0 w-6 text-center">
-          <span className="text-neutral-400 font-medium">{meal.day_number}</span>
+          <span className="text-text-secondary font-medium">{meal.day_number}</span>
         </div>
 
         {/* Checkbox for Meal Completion */}
@@ -323,16 +321,14 @@ export default function MealRow({ meal }) {
           disabled={!hasMealName || saving}
           className={`
             flex-shrink-0 w-5 h-5 rounded
-            border-2
-            flex items-center justify-center
-            transition-all duration-300 ease-out
-            self-center
+            border-2 flex items-center justify-center
+            transition-all duration-300 ease-out self-center
             ${
               hasMealName && !saving
-                ? 'border-neutral-600 hover:border-red-600 hover:scale-110 cursor-pointer'
-                : 'border-neutral-800 cursor-not-allowed opacity-40'
+                ? 'border-border-checkbox hover:border-primary hover:scale-110 cursor-pointer'
+                : 'border-border/50 cursor-not-allowed opacity-40'
             }
-            ${isCooked ? 'bg-red-600 border-red-600 scale-100' : 'bg-transparent scale-100'}
+            ${isCooked ? 'bg-primary border-primary scale-100' : 'bg-transparent scale-100'}
           `}
           aria-label={`Mark ${dayName} meal as ${isCooked ? 'not cooked' : 'cooked'}`}
           aria-checked={isCooked}
@@ -369,10 +365,10 @@ export default function MealRow({ meal }) {
           disabled={saving}
           className={`
             flex-1 bg-transparent border-none outline-none
-            placeholder-neutral-600
+            placeholder-text-placeholder
             text-base min-h-[44px] font-medium
             transition-all duration-300 ease-out
-            ${isCooked ? 'text-text-cooked' : 'text-neutral-100'}
+            ${isCooked ? 'text-text-secondary line-through decoration-text-tertiary/[0.99]' : 'text-text-primary'}
             ${saving ? 'opacity-50 cursor-wait' : 'cursor-text'}
           `}
           maxLength={100}
@@ -389,8 +385,8 @@ export default function MealRow({ meal }) {
               className={`
                 p-2 rounded transition-all duration-200
                 ${meal.recipe_url
-                  ? 'text-red-600 hover:text-red-500 hover:bg-red-600/10'
-                  : 'text-neutral-600 hover:text-neutral-400 hover:bg-neutral-800'
+                  ? 'text-primary hover:text-primary-hover hover:bg-primary/10'
+                  : 'text-text-tertiary hover:text-text-secondary hover:bg-bg-elevated'
                 }
               `}
               aria-label={meal.recipe_url ? 'Open recipe link' : 'Add recipe link'}
@@ -417,7 +413,7 @@ export default function MealRow({ meal }) {
               <button
                 type="button"
                 onClick={handleEditUrl}
-                className="absolute -bottom-6 right-0 text-xs text-neutral-500 hover:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute -bottom-6 right-0 text-xs text-text-tertiary hover:text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity"
                 title="Edit recipe URL"
               >
                 Edit
@@ -428,7 +424,7 @@ export default function MealRow({ meal }) {
 
         {/* Character Count (shown when focused and approaching limit) */}
         {isFocused && mealName.length > 80 && (
-          <div className="flex-shrink-0 text-xs text-neutral-500">
+          <div className="flex-shrink-0 text-xs text-text-tertiary">
             {mealName.length}/100
           </div>
         )}

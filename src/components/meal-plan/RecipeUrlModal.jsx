@@ -112,20 +112,20 @@ export default function RecipeUrlModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
       onClick={handleBackdropClick}
     >
       <div
-        className="bg-neutral-900 rounded-lg border border-neutral-800 p-6 w-full max-w-md shadow-2xl"
+        className="bg-bg-card rounded-lg border border-border p-6 w-full max-w-md shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Modal Header */}
-        <h3 className="text-lg font-semibold text-neutral-100 mb-2">
+        <h3 className="text-lg font-semibold text-text-primary mb-2">
           Recipe Link
         </h3>
 
         {/* Meal Name Display */}
-        <p className="text-sm text-neutral-400 mb-4">
+        <p className="text-sm text-text-secondary mb-4">
           {mealName || 'No meal name'}
         </p>
 
@@ -139,7 +139,7 @@ export default function RecipeUrlModal({
               setError(''); // Clear error on typing
             }}
             placeholder="https://example.com/recipe"
-            className="w-full px-3 py-2 bg-neutral-800 text-neutral-100 border border-neutral-700 rounded focus:outline-none focus:ring-2 focus:ring-red-600 focus:border-transparent hover:border-neutral-600 transition-colors duration-200 placeholder:text-neutral-600"
+            className="w-full px-3 py-2 bg-bg-elevated text-text-primary border border-border rounded focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent hover:border-border-secondary transition-colors duration-200 placeholder:text-text-placeholder"
             autoFocus
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
@@ -150,13 +150,13 @@ export default function RecipeUrlModal({
 
           {/* Error Message */}
           {error && (
-            <p className="text-sm text-red-400 mt-2">
+            <p className="text-sm text-error mt-2">
               {error}
             </p>
           )}
 
           {/* Helper Text */}
-          <p className="text-xs text-neutral-500 mt-2">
+          <p className="text-xs text-text-tertiary mt-2">
             Leave empty to remove the recipe link
           </p>
         </div>

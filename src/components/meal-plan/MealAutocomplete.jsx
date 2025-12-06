@@ -77,7 +77,7 @@ export default function MealAutocomplete({
       ref={dropdownRef}
       className="
         absolute top-full left-0 right-0 mt-1 z-50
-        bg-neutral-800 border border-neutral-700
+        bg-bg-elevated border border-border-secondary
         rounded-lg shadow-lg overflow-hidden
         animate-fade-in max-h-[280px] overflow-y-auto
       "
@@ -98,10 +98,10 @@ export default function MealAutocomplete({
             min-h-[44px] flex items-center justify-between
             ${
               index === selectedIndex
-                ? 'bg-red-600 text-white'
-                : 'text-neutral-100 hover:bg-neutral-700'
+                ? 'bg-primary text-white'
+                : 'text-text-primary hover:bg-bg-elevated/70'
             }
-            ${index !== suggestions.length - 1 ? 'border-b border-neutral-700' : ''}
+            ${index !== suggestions.length - 1 ? 'border-b border-border' : ''}
           `}
           role="option"
           aria-selected={index === selectedIndex}
@@ -111,7 +111,7 @@ export default function MealAutocomplete({
           {/* Show link icon if recipe URL exists */}
           {suggestion.recipe_url && (
             <svg
-              className="w-4 h-4 text-neutral-400 flex-shrink-0 ml-2"
+              className="w-4 h-4 text-text-tertiary flex-shrink-0 ml-2"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

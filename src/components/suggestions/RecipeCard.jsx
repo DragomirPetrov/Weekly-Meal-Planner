@@ -24,13 +24,13 @@ export default function RecipeCard({ recipe }) {
   const getCuisineBadgeClass = () => {
     switch (recipe.cuisine_type) {
       case 'italian':
-        return 'bg-cuisine-italian/20 text-cuisine-italian border-cuisine-italian/30';
+        return 'bg-bg-card/90 text-cuisine-italian border-cuisine-italian/30 backdrop-blur';
       case 'asian':
-        return 'bg-cuisine-asian/20 text-cuisine-asian border-cuisine-asian/30';
+        return 'bg-bg-card/90 text-cuisine-asian border-cuisine-asian/30 backdrop-blur';
       case 'bulgarian':
-        return 'bg-cuisine-bulgarian/20 text-cuisine-bulgarian border-cuisine-bulgarian/30';
+        return 'bg-bg-card/90 text-cuisine-bulgarian border-cuisine-bulgarian/30 backdrop-blur';
       default:
-        return 'bg-neutral-800 text-neutral-400 border-neutral-700';
+        return 'bg-bg-elevated text-text-secondary border-border';
     }
   };
 
@@ -57,7 +57,7 @@ export default function RecipeCard({ recipe }) {
         {[...Array(fullStars)].map((_, i) => (
           <svg
             key={`full-${i}`}
-            className="w-4 h-4 text-cuisine-asian"
+            className="w-4 h-4 text-star"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +70,7 @@ export default function RecipeCard({ recipe }) {
         {hasHalfStar && (
           <svg
             key="half"
-            className="w-4 h-4 text-cuisine-asian"
+            className="w-4 h-4 text-star"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -92,7 +92,7 @@ export default function RecipeCard({ recipe }) {
         {[...Array(emptyStars)].map((_, i) => (
           <svg
             key={`empty-${i}`}
-            className="w-4 h-4 text-neutral-700"
+            className="w-4 h-4 text-border-secondary"
             fill="currentColor"
             viewBox="0 0 20 20"
             xmlns="http://www.w3.org/2000/svg"
@@ -102,17 +102,17 @@ export default function RecipeCard({ recipe }) {
         ))}
 
         {/* Rating text */}
-        <span className="ml-1.5 text-sm text-neutral-400">{recipe.rating.toFixed(1)}</span>
+        <span className="ml-1.5 text-sm text-text-secondary">{recipe.rating.toFixed(1)}</span>
       </div>
     );
   };
 
   return (
-    <div className="bg-bg-card rounded-lg border border-neutral-800/50 p-5 transition-all duration-300 ease-out hover:border-neutral-700/70 shadow-card hover:shadow-card-hover">
+    <div className="bg-bg-card rounded-lg border border-border p-5 transition-all duration-300 ease-out hover:border-border-secondary hover:bg-bg-hover/70 shadow-card hover:shadow-card-hover">
       <div className="flex items-center justify-between gap-6">
         {/* Left: Recipe Name and Cuisine Badge */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-bold text-neutral-100 mb-2">
+          <h3 className="text-lg font-bold text-text-primary mb-2">
             {recipe.name}
           </h3>
           <div className="flex items-center gap-3">
@@ -134,11 +134,11 @@ export default function RecipeCard({ recipe }) {
         <div className="flex items-center gap-3 flex-shrink-0">
           {/* Add Button */}
           <button
-            className="p-2 rounded hover:bg-neutral-800 transition-colors"
+            className="p-2 rounded hover:bg-bg-elevated transition-colors"
             aria-label="Add to meal plan"
             title="Add to meal plan"
           >
-            <svg className="w-5 h-5 text-neutral-400 hover:text-neutral-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-5 h-5 text-text-tertiary hover:text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
           </button>
@@ -148,11 +148,11 @@ export default function RecipeCard({ recipe }) {
             href={recipe.recipe_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="p-2 rounded hover:bg-neutral-800 transition-colors"
+            className="p-2 rounded hover:bg-bg-elevated transition-colors"
             aria-label="View recipe"
             title="View recipe"
           >
-            <svg className="w-5 h-5 text-neutral-400 hover:text-neutral-100" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-5 h-5 text-text-tertiary hover:text-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
             </svg>
           </a>

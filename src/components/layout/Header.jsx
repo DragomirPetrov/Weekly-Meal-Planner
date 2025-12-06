@@ -15,7 +15,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-bg-surface border-b border-border/50">
+    <header className="bg-bg-elevated border-b border-border/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-end h-14">
           {/* User info and logout */}

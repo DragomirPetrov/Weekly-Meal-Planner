@@ -22,8 +22,8 @@ export default function Button({
 
   const variantStyles = {
     primary: 'bg-primary text-white hover:bg-primary-hover active:bg-primary-active',
-    secondary: 'bg-bg-surface text-text-primary border border-border hover:border-border-hover hover:bg-bg-elevated',
-    danger: 'bg-error text-white hover:bg-red-600 active:bg-red-700',
+    secondary: 'bg-bg-elevated text-text-primary border border-border hover:border-border-secondary hover:bg-bg-elevated/70',
+    danger: 'bg-error text-white hover:bg-primary-hover active:bg-primary-active',
   };
 
   const sizeStyles = {

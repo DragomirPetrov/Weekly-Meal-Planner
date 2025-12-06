@@ -7,37 +7,46 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Background colors
+        // Background colors - NEW ZINC-BASED SCHEME
         bg: {
-          primary: '#0a0a0a',
-          surface: '#1a1a1a',
-          elevated: '#262626',
-          cooked: '#0f0f0f',
-          card: '#1e1e1e',
+          primary: '#09090b',      // zinc-950 (main background)
+          surface: '#09090b',      // zinc-950 (same as primary)
+          elevated: '#27272a',     // zinc-800 (hover states, buttons)
+          card: '#18181b',         // zinc-900 (card/row background)
+          hover: '#18181b',        // zinc-900 (for opacity variants)
+          empty: '#18181b',        // zinc-900 (for opacity variants)
+          cooked: '#18181b',       // zinc-900 (completed meals)
         },
-        // Primary red colors
+        // Primary action colors - UPDATED TO RED-500/600
         primary: {
-          DEFAULT: '#dc2626',
-          hover: '#b91c1c',
-          active: '#991b1b',
+          DEFAULT: '#ef4444',      // red-500 (primary action)
+          hover: '#dc2626',        // red-600 (primary action hover)
+          active: '#b91c1c',       // red-700 (keep for active states)
+          ring: '#ef4444',         // red-500 (for ring utilities)
         },
-        // Text colors
+        // Text colors - NEW ZINC SCALE
         text: {
-          primary: '#fafafa',
-          secondary: '#a3a3a3',
-          disabled: '#525252',
-          cooked: '#a3a3a3',
+          primary: '#ffffff',      // white (primary text)
+          secondary: '#a1a1aa',    // zinc-400 (secondary text)
+          tertiary: '#71717a',     // zinc-500 (tertiary text, placeholders)
+          placeholder: '#71717a',  // zinc-500 (placeholder text)
+          disabled: '#52525b',     // zinc-600 (disabled text)
+          cooked: '#a1a1aa',       // zinc-400 (cooked meal text - muted)
         },
-        // Border colors
+        // Border colors - ZINC BORDERS
         border: {
-          DEFAULT: '#404040',
-          hover: '#525252',
+          DEFAULT: '#27272a',      // zinc-800 (primary border)
+          secondary: '#3f3f46',    // zinc-700 (hover state)
+          hover: '#3f3f46',        // zinc-700 (same as secondary)
+          checkbox: '#52525b',     // zinc-600 (checkbox border)
         },
         // Status colors
         success: '#10b981',
         warning: '#f59e0b',
-        error: '#ef4444',
-        // Cuisine badge colors
+        error: '#ef4444',          // red-500 (matching primary)
+        // Star rating color
+        star: '#eab308',           // yellow-500
+        // Cuisine badge colors (keep existing)
         cuisine: {
           italian: '#dc2626',
           asian: '#f59e0b',

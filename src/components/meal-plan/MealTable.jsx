@@ -73,7 +73,7 @@ export default function MealTable() {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
         <Spinner size="large" />
-        <p className="text-neutral-400 text-sm">Loading meal plan...</p>
+        <p className="text-text-secondary text-sm">Loading meal plan...</p>
       </div>
     );
   }
@@ -93,10 +93,10 @@ export default function MealTable() {
   if (meals.length === 0) {
     return (
       <div className="text-center py-12">
-        <p className="text-neutral-400">No meal plan found.</p>
+        <p className="text-text-secondary">No meal plan found.</p>
         <button
           onClick={refreshMeals}
-          className="mt-4 text-red-600 hover:text-red-500 text-sm"
+          className="mt-4 text-primary hover:text-primary-hover text-sm"
         >
           Refresh
         </button>
@@ -110,7 +110,7 @@ export default function MealTable() {
       collisionDetection={closestCenter}
       onDragEnd={handleDragEnd}
     >
-      <div className="space-y-4">
+      <div className="space-y-2.5">
         {/* Table Header (optional, for context) */}
         <div className="sr-only">
           <h3>Weekly Meal Plan</h3>
@@ -128,7 +128,7 @@ export default function MealTable() {
         </SortableContext>
 
         {/* Save indicator (optional, subtle feedback) */}
-        <div className="text-xs text-neutral-600 text-center mt-4">
+        <div className="text-xs text-text-tertiary text-center mt-4">
           Changes save automatically • Drag to reorder
         </div>
       </div>
