@@ -44,7 +44,6 @@ function MealRow({ meal }) {
     transform: CSS.Transform.toString(transform),
     transition: transition || 'transform 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
     opacity: isDragging ? 0.5 : 1,
-    touchAction: 'none', // Prevent browser touch handling during drag
   };
 
   // Local state for controlled input
