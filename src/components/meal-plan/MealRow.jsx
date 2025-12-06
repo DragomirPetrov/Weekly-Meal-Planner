@@ -323,7 +323,7 @@ function MealRow({ meal }) {
     <div ref={setNodeRef} style={style} className="relative group">
       <div
         className={`
-          flex items-center gap-2.5 px-3.5 py-3.5 rounded-lg
+          flex items-center gap-2 sm:gap-2.5 px-2 sm:px-3.5 py-3.5 rounded-lg
           border shadow-card hover:shadow-card-hover
           transition-all duration-500 ease-in-out
           ${isFocused ? 'border-primary ring-1 ring-primary/50 shadow-elevated' : ''}
