@@ -13,14 +13,14 @@ node_modules
 
 # Environment
 .env
-.env.local
-.env.*.local
+#.env.local
+#.env.*.local
 .env.example
 
 # Build
 dist
 dist-ssr
-*.local
+#*.local
 
 # Editor
 .vscode
@@ -40,3 +40,5 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 .claude/
+
+.vercel
