@@ -335,7 +335,7 @@ function MealRow({ meal }) {
         <div
           {...attributes}
           {...listeners}
-          className="flex-shrink-0 cursor-grab active:cursor-grabbing touch-none p-1"
+          className="flex-shrink-0 cursor-grab active:cursor-grabbing touch-none p-0.5"
         >
           <svg
             className="w-5 h-5 text-text-secondary"
@@ -405,7 +405,7 @@ function MealRow({ meal }) {
             placeholder-text-placeholder
             text-base min-h-[44px] font-medium
             transition-all duration-300 ease-out
-            border rounded px-2 py-1
+            border rounded px-1 py-1
             focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0
             border-transparent
             ${isCooked ? 'text-text-secondary line-through decoration-text-tertiary/[0.99]' : 'text-text-primary'}
