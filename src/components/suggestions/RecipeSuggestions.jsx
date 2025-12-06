@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { suggestionsService } from '../../services/suggestions.service';
+import { useMealPlan } from '../../contexts/MealPlanContext';
 import RecipeCard from './RecipeCard';
 import Spinner from '../ui/Spinner';
 import ErrorMessage from '../ui/ErrorMessage';
@@ -20,9 +21,11 @@ import ErrorMessage from '../ui/ErrorMessage';
  * @param {Date} props.currentWeekStart - Monday of the current week
  */
 export default function RecipeSuggestions({ currentWeekStart }) {
+  const { meals, updateMeal } = useMealPlan();
   const [recipes, setRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [addError, setAddError] = useState(null);
 
   /**
    * Fetch weekly recipe suggestions whenever the week changes
@@ -30,6 +33,30 @@ export default function RecipeSuggestions({ currentWeekStart }) {
   useEffect(() => {
     fetchSuggestions();
   }, [currentWeekStart]);
+
+  /**
+   * Handle adding a recipe to the meal plan
+   * Finds first empty slot and adds the recipe there
+   * Shows error if all slots are full
+   */
+  const handleAddRecipe = async (recipe) => {
+    // Clear any previous add error
+    setAddError(null);
+
+    // Find first empty meal slot
+    const emptyMeal = meals.find(meal => !meal.meal_name || meal.meal_name.trim() === '');
+
+    if (emptyMeal) {
+      // Add recipe to first empty slot
+      await updateMeal(emptyMeal.day_number, {
+        meal_name: recipe.name,
+        recipe_url: recipe.recipe_url
+      });
+    } else {
+      // All slots are full - show error
+      setAddError('It looks like everything for the week is planned and there is no free slot');
+    }
+  };
 
   /**
    * Fetch recipe suggestions for the current week
@@ -121,7 +148,7 @@ export default function RecipeSuggestions({ currentWeekStart }) {
   }
 
   return (
-    <div className="mt-16">
+    <div className="mt-[52px]">
       {/* Section Header */}
       <div className="flex items-center gap-3 mb-6">
         <svg className="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -132,10 +159,21 @@ export default function RecipeSuggestions({ currentWeekStart }) {
         </h2>
       </div>
 
+      {/* Add Error Message */}
+      {addError && (
+        <div className="mb-4">
+          <ErrorMessage
+            message={addError}
+            onDismiss={() => setAddError(null)}
+            dismissText="Dismiss"
+          />
+        </div>
+      )}
+
       {/* Recipe Cards - Vertical List */}
-      <div className="space-y-4">
+      <div className="space-y-2.5">
         {recipes.map((recipe) => (
-          <RecipeCard key={recipe.id} recipe={recipe} />
+          <RecipeCard key={recipe.id} recipe={recipe} onAdd={handleAddRecipe} />
         ))}
       </div>
     </div>

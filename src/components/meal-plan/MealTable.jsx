@@ -126,11 +126,6 @@ export default function MealTable() {
             <MealRow key={meal.day_number} meal={meal} />
           ))}
         </SortableContext>
-
-        {/* Save indicator (optional, subtle feedback) */}
-        <div className="text-xs text-text-tertiary text-center mt-4">
-          Changes save automatically • Drag to reorder
-        </div>
       </div>
     </DndContext>
   );

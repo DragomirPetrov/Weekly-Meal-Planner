@@ -77,8 +77,8 @@ export default function MealAutocomplete({
       ref={dropdownRef}
       className="
         absolute top-full left-0 right-0 mt-1 z-50
-        bg-bg-elevated border border-border-secondary
-        rounded-lg shadow-lg overflow-hidden
+        bg-bg-card border border-border
+        rounded-lg shadow-card overflow-hidden
         animate-fade-in max-h-[280px] overflow-y-auto
       "
       role="listbox"
@@ -94,24 +94,24 @@ export default function MealAutocomplete({
           }}
           className={`
             w-full px-4 py-3 text-left text-base
-            transition-colors cursor-pointer
-            min-h-[44px] flex items-center justify-between
+            transition-all duration-200 cursor-pointer
+            min-h-[44px] flex items-center justify-between gap-2
             ${
               index === selectedIndex
                 ? 'bg-primary text-white'
-                : 'text-text-primary hover:bg-bg-elevated/70'
+                : 'text-text-primary hover:bg-bg-hover'
             }
-            ${index !== suggestions.length - 1 ? 'border-b border-border' : ''}
+            ${index !== suggestions.length - 1 ? 'border-b border-border/50' : ''}
           `}
           role="option"
           aria-selected={index === selectedIndex}
         >
-          <span>{suggestion.meal_name}</span>
+          <span className="font-medium">{suggestion.meal_name}</span>
 
           {/* Show link icon if recipe URL exists */}
           {suggestion.recipe_url && (
             <svg
-              className="w-4 h-4 text-text-tertiary flex-shrink-0 ml-2"
+              className={`w-4 h-4 flex-shrink-0 ${index === selectedIndex ? 'text-white' : 'text-primary'}`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

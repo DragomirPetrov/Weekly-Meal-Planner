@@ -24,7 +24,7 @@ export default function WeekNavigation() {
 
   return (
     <div className={`
-      bg-bg-card rounded-lg p-5 mb-6 shadow-card border border-primary
+      bg-bg-card rounded-lg p-5 mb-4 shadow-card border border-primary
       transition-all duration-300
       ${isThisWeek ? 'ring-2 ring-primary/20' : ''}
     `}>

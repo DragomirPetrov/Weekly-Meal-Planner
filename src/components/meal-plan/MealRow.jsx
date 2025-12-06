@@ -364,10 +364,13 @@ export default function MealRow({ meal }) {
           placeholder="Add meal name..."
           disabled={saving}
           className={`
-            flex-1 bg-transparent border-none outline-none
+            flex-1 bg-transparent outline-none
             placeholder-text-placeholder
             text-base min-h-[44px] font-medium
             transition-all duration-300 ease-out
+            border rounded px-2 py-1
+            focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0
+            border-transparent
             ${isCooked ? 'text-text-secondary line-through decoration-text-tertiary/[0.99]' : 'text-text-primary'}
             ${saving ? 'opacity-50 cursor-wait' : 'cursor-text'}
           `}
@@ -407,18 +410,6 @@ export default function MealRow({ meal }) {
                 />
               </svg>
             </button>
-
-            {/* Edit URL option - appears on hover if URL exists */}
-            {meal.recipe_url && (
-              <button
-                type="button"
-                onClick={handleEditUrl}
-                className="absolute -bottom-6 right-0 text-xs text-text-tertiary hover:text-text-secondary opacity-0 group-hover:opacity-100 transition-opacity"
-                title="Edit recipe URL"
-              >
-                Edit
-              </button>
-            )}
           </div>
         )}
 

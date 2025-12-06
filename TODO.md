@@ -3,9 +3,9 @@
 **What's left**
 
 - [ ] Remove Sign UP
-- [ ] Remove Log Out
+- [✅] Remove Log Out
 - [ ] Backend
-- [ ] Add recipe from suggestions on the first available place in the current week
+- [✅] Add recipe from suggestions on the first available place in the current week
 - [ ] Unit Tests
 
 ---
