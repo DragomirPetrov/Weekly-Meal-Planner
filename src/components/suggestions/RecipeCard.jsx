@@ -40,7 +40,7 @@ export default function RecipeCard({ recipe, onAdd }) {
         </div>
 
         {/* Right: Action Buttons */}
-        <div className="flex items-center gap-3 flex-shrink-0">
+        <div className="flex items-center gap-2 flex-shrink-0 pr-1">
           {/* Add Button */}
           <button
             onClick={() => onAdd && onAdd(recipe)}
