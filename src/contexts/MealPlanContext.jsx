@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { mealPlanService } from '../services/mealPlan.service';
 import { historyService } from '../services/history.service';
+import { suggestionsService } from '../services/suggestions.service';
 import { getCurrentMonday, addWeeks, formatISODate } from '../utils/dateUtils';
 
 const MealPlanContext = createContext(null);
@@ -16,6 +17,9 @@ export function MealPlanProvider({ children }) {
   // Array of 7 meals for current week
   const [meals, setMeals] = useState([]);
 
+  // Array of weekly recipe suggestions
+  const [suggestions, setSuggestions] = useState([]);
+
   // Loading states
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -24,9 +28,10 @@ export function MealPlanProvider({ children }) {
   const [error, setError] = useState(null);
 
   /**
-   * Fetch meals for the current week
+   * Fetch meals and suggestions for the current week in parallel
    * Creates empty week if it doesn't exist
    * Restores missing rows if some are deleted
+   * Eliminates flash by loading both datasets together
    */
   const fetchWeekMeals = useCallback(async (weekStart) => {
     try {
@@ -34,10 +39,17 @@ export function MealPlanProvider({ children }) {
       setError(null);
 
       const weekStartISO = formatISODate(weekStart);
-      let { data: weekMeals, error: fetchError } = await mealPlanService.getWeekMeals(weekStartISO);
 
-      if (fetchError) {
-        throw fetchError;
+      // Fetch BOTH meals and suggestions in parallel
+      const [mealsResult, suggestionsResult] = await Promise.all([
+        mealPlanService.getWeekMeals(weekStartISO),
+        suggestionsService.getWeeklySuggestions(weekStart)
+      ]);
+
+      // Handle meals
+      let weekMeals = mealsResult.data;
+      if (mealsResult.error) {
+        throw mealsResult.error;
       }
 
       // If no meals exist for this week, create empty week
@@ -70,6 +82,14 @@ export function MealPlanProvider({ children }) {
 
       // Sort by day_number to ensure correct order (1-7)
       weekMeals.sort((a, b) => a.day_number - b.day_number);
+
+      // Handle suggestions - don't fail entire load if suggestions fail
+      if (suggestionsResult.error) {
+        console.error('Error fetching suggestions:', suggestionsResult.error);
+        setSuggestions([]); // Show empty suggestions instead of blocking
+      } else {
+        setSuggestions(suggestionsResult.data || []);
+      }
 
       setMeals(weekMeals);
     } catch (err) {
@@ -240,6 +260,7 @@ export function MealPlanProvider({ children }) {
     // State
     currentWeekStart,
     meals,
+    suggestions,
     loading,
     saving,
     error,

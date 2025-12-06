@@ -11,10 +11,13 @@ import RecipeSuggestions from './components/suggestions/RecipeSuggestions';
  * Main content wrapper that uses meal plan context
  */
 function MainContent() {
-  const { currentWeekStart } = useMealPlan();
+  const { goToPreviousWeek, goToNextWeek } = useMealPlan();
 
   return (
-    <Container>
+    <Container
+      onSwipeLeft={goToNextWeek}
+      onSwipeRight={goToPreviousWeek}
+    >
       <div className="max-w-5xl mx-auto">
         {/* Page Title */}
         <div className="flex items-center gap-3 mb-6">
@@ -32,8 +35,8 @@ function MainContent() {
         {/* Weekly Meal Table */}
         <MealTable />
 
-        {/* Weekly Recipe Suggestions (Phase 6) */}
-        <RecipeSuggestions currentWeekStart={currentWeekStart} />
+        {/* Weekly Recipe Suggestions */}
+        <RecipeSuggestions />
       </div>
     </Container>
   );

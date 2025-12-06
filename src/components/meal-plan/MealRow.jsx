@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useMealPlan } from '../../contexts/MealPlanContext';
@@ -19,6 +19,7 @@ import RecipeUrlModal from './RecipeUrlModal';
  * - Touch-friendly for mobile (16px minimum font size)
  * - Intelligent autocomplete (triggers after 3 characters)
  * - Keyboard navigation for autocomplete
+ * - Optimized with React.memo to prevent unnecessary re-renders
  *
  * @param {Object} props
  * @param {Object} props.meal - Meal object from database
@@ -26,8 +27,8 @@ import RecipeUrlModal from './RecipeUrlModal';
  * @param {string} props.meal.meal_name - Name of the meal
  * @param {boolean} props.meal.is_cooked - Completion status
  */
-export default function MealRow({ meal }) {
-  const { updateMeal, saving } = useMealPlan();
+function MealRow({ meal }) {
+  const { updateMeal } = useMealPlan();
 
   // Drag and drop setup
   const {
@@ -43,11 +44,13 @@ export default function MealRow({ meal }) {
     transform: CSS.Transform.toString(transform),
     transition: transition || 'transform 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
     opacity: isDragging ? 0.5 : 1,
+    touchAction: 'none', // Prevent browser touch handling during drag
   };
 
   // Local state for controlled input
   const [mealName, setMealName] = useState(meal.meal_name || '');
   const [isFocused, setIsFocused] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Autocomplete state
   const [suggestions, setSuggestions] = useState([]); // Array of {meal_name, recipe_url} objects
@@ -118,7 +121,12 @@ export default function MealRow({ meal }) {
 
     // Only save if value changed
     if (trimmedName !== (meal.meal_name || '')) {
-      await updateMeal(meal.day_number, { meal_name: trimmedName });
+      try {
+        setIsSaving(true);
+        await updateMeal(meal.day_number, { meal_name: trimmedName });
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
@@ -153,7 +161,12 @@ export default function MealRow({ meal }) {
     }
 
     // Always save when selecting from autocomplete (meal name OR URL might have changed)
-    await updateMeal(meal.day_number, updates);
+    try {
+      setIsSaving(true);
+      await updateMeal(meal.day_number, updates);
+    } finally {
+      setIsSaving(false);
+    }
 
     // Blur input to complete the interaction
     inputRef.current?.blur();
@@ -259,17 +272,27 @@ export default function MealRow({ meal }) {
    * Handle checkbox toggle for meal completion
    */
   const handleToggleCooked = async () => {
-    if (!hasMealName) return; // Don't allow toggle if no meal name
+    if (!hasMealName || isSaving) return; // Don't allow toggle if no meal name or already saving
 
-    const newCookedState = !isCooked;
-    await updateMeal(meal.day_number, { is_cooked: newCookedState });
+    try {
+      setIsSaving(true);
+      const newCookedState = !isCooked;
+      await updateMeal(meal.day_number, { is_cooked: newCookedState });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   /**
    * Handle recipe URL save from modal
    */
   const handleSaveRecipeUrl = async (url) => {
-    await updateMeal(meal.day_number, { recipe_url: url });
+    try {
+      setIsSaving(true);
+      await updateMeal(meal.day_number, { recipe_url: url });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   /**
@@ -301,30 +324,45 @@ export default function MealRow({ meal }) {
     <div ref={setNodeRef} style={style} className="relative group">
       <div
         className={`
-          flex items-center gap-4 px-3.5 py-3.5 rounded-lg
-          border transition-all duration-300 ease-out
-          shadow-card hover:shadow-card-hover
+          flex items-center gap-2.5 px-3.5 py-3.5 rounded-lg
+          border shadow-card hover:shadow-card-hover
+          transition-all duration-500 ease-in-out
           ${isFocused ? 'border-primary ring-1 ring-primary/50 shadow-elevated' : ''}
-          ${isCooked ? 'bg-bg-card opacity-50' : 'bg-bg-card'}
+          ${isCooked ? 'bg-bg-card opacity-60' : 'bg-bg-card opacity-100'}
           ${isDragging ? 'shadow-elevated ring-2 ring-primary/30' : 'border-border hover:border-border-secondary'}
         `}
       >
-        {/* Day Number */}
-        <div className="flex-shrink-0 w-6 text-center">
-          <span className="text-text-secondary font-medium">{meal.day_number}</span>
+        {/* Drag Handle - 6 Dots Icon */}
+        <div
+          {...attributes}
+          {...listeners}
+          className="flex-shrink-0 cursor-grab active:cursor-grabbing touch-none p-1"
+        >
+          <svg
+            className="w-5 h-5 text-text-secondary"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <circle cx="7" cy="5" r="1.5" />
+            <circle cx="13" cy="5" r="1.5" />
+            <circle cx="7" cy="10" r="1.5" />
+            <circle cx="13" cy="10" r="1.5" />
+            <circle cx="7" cy="15" r="1.5" />
+            <circle cx="13" cy="15" r="1.5" />
+          </svg>
         </div>
 
         {/* Checkbox for Meal Completion */}
         <button
           type="button"
           onClick={handleToggleCooked}
-          disabled={!hasMealName || saving}
+          disabled={!hasMealName || isSaving}
           className={`
             flex-shrink-0 w-5 h-5 rounded
             border-2 flex items-center justify-center
             transition-all duration-300 ease-out self-center
             ${
-              hasMealName && !saving
+              hasMealName && !isSaving
                 ? 'border-border-checkbox hover:border-primary hover:scale-110 cursor-pointer'
                 : 'border-border/50 cursor-not-allowed opacity-40'
             }
@@ -362,7 +400,7 @@ export default function MealRow({ meal }) {
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           placeholder="Add meal name..."
-          disabled={saving}
+          disabled={isSaving}
           className={`
             flex-1 bg-transparent outline-none
             placeholder-text-placeholder
@@ -372,7 +410,7 @@ export default function MealRow({ meal }) {
             focus-visible:border-primary focus-visible:ring-0 focus-visible:ring-offset-0
             border-transparent
             ${isCooked ? 'text-text-secondary line-through decoration-text-tertiary/[0.99]' : 'text-text-primary'}
-            ${saving ? 'opacity-50 cursor-wait' : 'cursor-text'}
+            ${isSaving ? 'opacity-50 cursor-wait' : 'cursor-text'}
           `}
           maxLength={100}
           aria-label={`Meal name for ${dayName}`}
@@ -443,3 +481,19 @@ export default function MealRow({ meal }) {
     </div>
   );
 }
+
+/**
+ * Custom comparison function for React.memo
+ * Only re-render if the meal data actually changed
+ */
+function areEqual(prevProps, nextProps) {
+  return (
+    prevProps.meal.day_number === nextProps.meal.day_number &&
+    prevProps.meal.meal_name === nextProps.meal.meal_name &&
+    prevProps.meal.is_cooked === nextProps.meal.is_cooked &&
+    prevProps.meal.recipe_url === nextProps.meal.recipe_url
+  );
+}
+
+// Export memoized component to prevent unnecessary re-renders
+export default memo(MealRow, areEqual);
