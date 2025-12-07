@@ -4,6 +4,10 @@
 
 - [ ] Remove Sign UP
 - [✅] Remove Log Out
+- [ ] Slow loading of next week meal plan
+- [ ] Stay Logged in
+- [ ] favoicon
+- [ ] Drag and drop smoother transition
 - [ ] Backend
 - [✅] Add recipe from suggestions on the first available place in the current week
 - [ ] Unit Tests
