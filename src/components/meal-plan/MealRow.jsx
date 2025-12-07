@@ -5,6 +5,7 @@ import { useMealPlan } from '../../contexts/MealPlanContext';
 import { historyService } from '../../services/history.service';
 import { DAYS_OF_WEEK } from '../../utils/constants';
 import MealAutocomplete from './MealAutocomplete';
+import AutocompletePortal from './AutocompletePortal';
 import RecipeUrlModal from './RecipeUrlModal';
 
 /**
@@ -414,7 +415,12 @@ function MealRow({ meal }) {
           `}
           maxLength={100}
           aria-label={`Meal name for ${dayName}`}
+          name={`meal-${meal.day_number}`}
           autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="none"
+          spellCheck="false"
+          data-form-type="other"
         />
 
         {/* Recipe URL Icon */}
@@ -460,7 +466,10 @@ function MealRow({ meal }) {
       </div>
 
       {/* Autocomplete Dropdown */}
-      {showAutocomplete && (
+      <AutocompletePortal
+        anchorRef={inputRef}
+        isOpen={showAutocomplete}
+      >
         <MealAutocomplete
           suggestions={suggestions}
           selectedIndex={selectedIndex}
@@ -468,7 +477,7 @@ function MealRow({ meal }) {
           onClose={handleCloseAutocomplete}
           inputRef={inputRef}
         />
-      )}
+      </AutocompletePortal>
 
       {/* Recipe URL Modal */}
       <RecipeUrlModal

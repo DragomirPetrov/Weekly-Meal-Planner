@@ -76,10 +76,10 @@ export default function MealAutocomplete({
     <div
       ref={dropdownRef}
       className="
-        absolute top-full left-0 right-0 mt-1 z-50
         bg-bg-card border border-border
         rounded-lg shadow-card overflow-hidden
         animate-fade-in max-h-[280px] overflow-y-auto
+        w-full
       "
       role="listbox"
       aria-label="Meal suggestions"
