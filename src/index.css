@@ -51,6 +51,6 @@
     perspective: 1000px;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    touch-action: none;
+    touch-action: pan-y;
   }
 }
