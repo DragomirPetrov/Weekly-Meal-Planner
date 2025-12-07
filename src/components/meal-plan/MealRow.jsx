@@ -400,10 +400,19 @@ function MealRow({ meal }) {
           type="text"
           value={mealName}
           onChange={handleChange}
+          onClick={() => {
+            if (isReadOnly) {
+              setIsReadOnly(false);
+            }
+          }}
           onFocus={(e) => {
             setIsFocused(true);
             if (isReadOnly) {
               setIsReadOnly(false);
+              // Re-focus after removing readonly to show keyboard
+              setTimeout(() => {
+                e.target.focus();
+              }, 0);
             }
           }}
           onBlur={handleBlur}
