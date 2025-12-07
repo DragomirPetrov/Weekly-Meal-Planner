@@ -68,8 +68,38 @@ export default function MealTable() {
     swapMeals(fromDay, toDay);
   };
 
-  // Loading state
-  if (loading) {
+  // Show cached/previous data while loading new week (optimistic UI)
+  if (loading && meals.length > 0) {
+    return (
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="relative space-y-2.5">
+          {/* Small loading indicator in corner */}
+          <div className="absolute -top-8 right-0 z-10">
+            <Spinner size="small" />
+          </div>
+
+          {/* Show previous week's data with reduced opacity */}
+          <div className="opacity-50 pointer-events-none">
+            <SortableContext
+              items={meals.map(meal => meal.day_number)}
+              strategy={verticalListSortingStrategy}
+            >
+              {meals.map((meal) => (
+                <MealRow key={meal.day_number} meal={meal} />
+              ))}
+            </SortableContext>
+          </div>
+        </div>
+      </DndContext>
+    );
+  }
+
+  // Show full loading spinner only on initial load (no cached data)
+  if (loading && meals.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 space-y-4">
         <Spinner size="large" />

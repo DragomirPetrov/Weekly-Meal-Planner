@@ -27,78 +27,127 @@ export function MealPlanProvider({ children }) {
   // Error state
   const [error, setError] = useState(null);
 
+  // Cache for visited weeks (LRU cache with 4-week limit)
+  const [weekCache, setWeekCache] = useState(new Map());
+  const CACHE_LIMIT = 4;
+
+  /**
+   * Fetch fresh data from Supabase
+   * Extracted as separate function to be reused by cache logic
+   */
+  const fetchFreshData = useCallback(async (weekStart, weekStartISO) => {
+    setLoading(true);
+    setError(null);
+
+    // Fetch BOTH meals and suggestions in parallel
+    const [mealsResult, suggestionsResult] = await Promise.all([
+      mealPlanService.getWeekMeals(weekStartISO),
+      suggestionsService.getWeeklySuggestions(weekStart)
+    ]);
+
+    // Handle meals
+    let weekMeals = mealsResult.data;
+    if (mealsResult.error) {
+      throw mealsResult.error;
+    }
+
+    // If no meals exist for this week, create empty week
+    if (!weekMeals || weekMeals.length === 0) {
+      const { error: createError } = await mealPlanService.createEmptyWeek(weekStartISO);
+      if (createError) {
+        throw createError;
+      }
+
+      const { data: newWeekMeals, error: refetchError } = await mealPlanService.getWeekMeals(weekStartISO);
+      if (refetchError) {
+        throw refetchError;
+      }
+      weekMeals = newWeekMeals;
+    }
+    // If some meals exist but not all 7, restore missing rows
+    else if (weekMeals.length < 7) {
+      console.warn(`Only ${weekMeals.length} meals found, restoring missing rows...`);
+      const { data: restoredMeals, error: restoreError } = await mealPlanService.restoreMissingRows(weekStartISO);
+      if (restoreError) {
+        console.error('Error restoring missing rows:', restoreError);
+      } else {
+        weekMeals = restoredMeals; // Use returned data, no refetch!
+      }
+    }
+
+    // Sort by day_number to ensure correct order (1-7)
+    weekMeals.sort((a, b) => a.day_number - b.day_number);
+
+    // Handle suggestions - don't fail entire load if suggestions fail
+    if (suggestionsResult.error) {
+      console.error('Error fetching suggestions:', suggestionsResult.error);
+      setSuggestions([]); // Show empty suggestions instead of blocking
+    } else {
+      setSuggestions(suggestionsResult.data || []);
+    }
+
+    setMeals(weekMeals);
+
+    // Add to cache
+    setWeekCache(prevCache => {
+      const newCache = new Map(prevCache);
+
+      // Add new entry
+      newCache.set(weekStartISO, {
+        meals: weekMeals,
+        suggestions: suggestionsResult.data || [],
+      });
+
+      // LRU eviction: if cache exceeds limit, remove oldest
+      if (newCache.size > CACHE_LIMIT) {
+        const firstKey = newCache.keys().next().value;
+        newCache.delete(firstKey);
+      }
+
+      return newCache;
+    });
+
+    setLoading(false);
+  }, [CACHE_LIMIT]);
+
   /**
    * Fetch meals and suggestions for the current week in parallel
+   * Uses cache for instant loading of previously visited weeks
    * Creates empty week if it doesn't exist
    * Restores missing rows if some are deleted
    * Eliminates flash by loading both datasets together
    */
   const fetchWeekMeals = useCallback(async (weekStart) => {
     try {
-      setLoading(true);
-      setError(null);
-
       const weekStartISO = formatISODate(weekStart);
 
-      // Fetch BOTH meals and suggestions in parallel
-      const [mealsResult, suggestionsResult] = await Promise.all([
-        mealPlanService.getWeekMeals(weekStartISO),
-        suggestionsService.getWeeklySuggestions(weekStart)
-      ]);
+      // Check cache first
+      if (weekCache.has(weekStartISO)) {
+        const cached = weekCache.get(weekStartISO);
 
-      // Handle meals
-      let weekMeals = mealsResult.data;
-      if (mealsResult.error) {
-        throw mealsResult.error;
+        // Show cached data immediately (optimistic UI)
+        setMeals(cached.meals);
+        setSuggestions(cached.suggestions);
+        setLoading(false);
+
+        // Optionally revalidate in background (for fresh data)
+        // Uncomment to enable background revalidation
+        // setTimeout(() => {
+        //   fetchFreshData(weekStart, weekStartISO);
+        // }, 0);
+
+        return;
       }
 
-      // If no meals exist for this week, create empty week
-      if (!weekMeals || weekMeals.length === 0) {
-        const { error: createError } = await mealPlanService.createEmptyWeek(weekStartISO);
-        if (createError) {
-          throw createError;
-        }
+      // Not in cache - fetch fresh data
+      await fetchFreshData(weekStart, weekStartISO);
 
-        const { data: newWeekMeals, error: refetchError } = await mealPlanService.getWeekMeals(weekStartISO);
-        if (refetchError) {
-          throw refetchError;
-        }
-        weekMeals = newWeekMeals;
-      }
-      // If some meals exist but not all 7, restore missing rows
-      else if (weekMeals.length < 7) {
-        console.warn(`Only ${weekMeals.length} meals found, restoring missing rows...`);
-        const { error: restoreError } = await mealPlanService.restoreMissingRows(weekStartISO);
-        if (restoreError) {
-          console.error('Error restoring missing rows:', restoreError);
-        } else {
-          // Refetch to get the complete week
-          const { data: restoredMeals, error: refetchError } = await mealPlanService.getWeekMeals(weekStartISO);
-          if (!refetchError) {
-            weekMeals = restoredMeals;
-          }
-        }
-      }
-
-      // Sort by day_number to ensure correct order (1-7)
-      weekMeals.sort((a, b) => a.day_number - b.day_number);
-
-      // Handle suggestions - don't fail entire load if suggestions fail
-      if (suggestionsResult.error) {
-        console.error('Error fetching suggestions:', suggestionsResult.error);
-        setSuggestions([]); // Show empty suggestions instead of blocking
-      } else {
-        setSuggestions(suggestionsResult.data || []);
-      }
-
-      setMeals(weekMeals);
     } catch (err) {
       console.error('Error fetching week meals:', err);
       setError('Failed to load meal plan. Please try again.');
-    } finally {
       setLoading(false);
     }
-  }, []);
+  }, [weekCache, fetchFreshData]);
 
   /**
    * Load meals when currentWeekStart changes

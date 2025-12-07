@@ -50,17 +50,18 @@ export const mealPlanService = {
   /**
    * Restore missing meal rows for a week
    * Checks which day_numbers are missing (1-7) and creates them
+   * Returns complete week data (existing + newly created meals)
    * @param {Date} weekStartDate - Monday of the week
-   * @returns {Promise<{error: Error|null}>}
+   * @returns {Promise<{data: MealPlan[]|null, error: Error|null}>}
    */
   async restoreMissingRows(weekStartDate) {
     const weekStr = formatISODate(weekStartDate);
 
     try {
-      // Get existing meals
+      // Get existing meals - fetch full data, not just day_number
       const { data: existingMeals, error: fetchError } = await supabase
         .from('meal_plans')
-        .select('day_number')
+        .select('*')
         .eq('week_start_date', weekStr);
 
       if (fetchError) {
@@ -71,7 +72,8 @@ export const mealPlanService = {
       const missingDays = [1, 2, 3, 4, 5, 6, 7].filter(day => !existingDays.includes(day));
 
       if (missingDays.length === 0) {
-        return { error: null }; // Nothing to restore
+        // No missing days - return existing meals
+        return { data: existingMeals, error: null };
       }
 
       // Create missing rows
@@ -83,18 +85,23 @@ export const mealPlanService = {
         recipe_url: null,
       }));
 
-      const { error: insertError } = await supabase
+      const { data: insertedMeals, error: insertError } = await supabase
         .from('meal_plans')
-        .insert(missingMeals);
+        .insert(missingMeals)
+        .select();
 
       if (insertError) {
         throw insertError;
       }
 
-      return { error: null };
+      // Combine existing and inserted meals
+      const completeMeals = [...existingMeals, ...insertedMeals];
+      completeMeals.sort((a, b) => a.day_number - b.day_number);
+
+      return { data: completeMeals, error: null };
     } catch (error) {
       console.error('Error restoring missing rows:', error);
-      return { error };
+      return { data: null, error };
     }
   },
 
