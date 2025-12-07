@@ -61,9 +61,6 @@ function MealRow({ meal }) {
   // Recipe URL modal state
   const [showUrlModal, setShowUrlModal] = useState(false);
 
-  // iOS autofill prevention
-  const [isReadOnly, setIsReadOnly] = useState(true);
-
   const inputRef = useRef(null);
   const debounceTimerRef = useRef(null);
 
@@ -397,29 +394,14 @@ function MealRow({ meal }) {
         {/* Editable Meal Name Input */}
         <input
           ref={inputRef}
-          type="text"
+          type="search"
           value={mealName}
           onChange={handleChange}
-          onClick={() => {
-            if (isReadOnly) {
-              setIsReadOnly(false);
-            }
-          }}
-          onFocus={(e) => {
-            setIsFocused(true);
-            if (isReadOnly) {
-              setIsReadOnly(false);
-              // Re-focus after removing readonly to show keyboard
-              setTimeout(() => {
-                e.target.focus();
-              }, 0);
-            }
-          }}
+          onFocus={() => setIsFocused(true)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           placeholder="Add meal name..."
           disabled={isSaving}
-          readOnly={isReadOnly}
           className={`
             flex-1 max-w-[210px] sm:max-w-none bg-transparent outline-none
             placeholder-text-placeholder
@@ -434,13 +416,11 @@ function MealRow({ meal }) {
           maxLength={100}
           aria-label={`Meal name for ${dayName}`}
           id={`meal-input-${meal.day_number}`}
-          name="meal-name-input"
+          name="search-meal"
           autoComplete="off"
           autoCorrect="off"
           autoCapitalize="off"
           spellCheck="false"
-          data-lpignore="true"
-          data-form-type="other"
         />
 
         {/* Recipe URL Icon */}
