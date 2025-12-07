@@ -42,4 +42,15 @@
     min-height: 44px;
     min-width: 44px;
   }
+
+  /* Drag and drop optimizations for iOS */
+  .drag-optimize {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-perspective: 1000px;
+    perspective: 1000px;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    touch-action: none;
+  }
 }

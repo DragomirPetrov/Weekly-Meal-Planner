@@ -110,7 +110,7 @@ export default function AuthForm() {
             Weekly Meal Planner
           </h1>
           <p className="text-text-secondary">
-            {isLogin ? 'Sign in to your account' : 'Create a new account'}
+            Sign in to your account
           </p>
         </div>
 
@@ -186,29 +186,7 @@ export default function AuthForm() {
               {isLogin ? 'Sign In' : 'Sign Up'}
             </Button>
           </form>
-
-          {/* Toggle mode */}
-          <div className="mt-6 text-center text-sm">
-            <span className="text-text-secondary">
-              {isLogin ? "Don't have an account?" : 'Already have an account?'}
-            </span>
-            {' '}
-            <button
-              onClick={toggleMode}
-              className="text-primary hover:text-primary-hover font-medium transition-colors"
-              disabled={loading}
-            >
-              {isLogin ? 'Sign Up' : 'Sign In'}
-            </button>
-          </div>
         </div>
-
-        {/* Footer note */}
-        <p className="mt-6 text-center text-xs text-text-disabled">
-          This app is for shared household meal planning.
-          <br />
-          Both users will see the same meal plans and data.
-        </p>
       </div>
     </div>
   );

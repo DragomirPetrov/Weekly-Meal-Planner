@@ -40,8 +40,8 @@ export default function MealTable() {
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        distance: 8, // 8px drag distance - prevents conflict with scrolling and enables browser simulation
-        tolerance: 5, // 5px tolerance for touch precision
+        distance: 5, // Reduced from 8px for faster response on iOS
+        tolerance: 3, // Reduced from 5px for tighter control
       },
     })
   );

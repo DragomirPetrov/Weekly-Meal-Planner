@@ -42,8 +42,9 @@ function MealRow({ meal }) {
 
   const style = {
     transform: CSS.Transform.toString(transform),
-    transition: transition || 'transform 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+    transition: transition || 'transform 150ms cubic-bezier(0.2, 0, 0, 1)',
     opacity: isDragging ? 0.5 : 1,
+    willChange: isDragging ? 'transform' : 'auto',
   };
 
   // Local state for controlled input
@@ -320,12 +321,12 @@ function MealRow({ meal }) {
   };
 
   return (
-    <div ref={setNodeRef} style={style} className="relative group">
+    <div ref={setNodeRef} style={style} className="relative group drag-optimize">
       <div
         className={`
           flex items-center gap-1 sm:gap-2.5 px-1.5 sm:px-3.5 py-3.5 rounded-lg
           border shadow-card hover:shadow-card-hover
-          transition-all duration-500 ease-in-out
+          transition-colors duration-200 ease-out
           ${isFocused ? 'border-primary ring-1 ring-primary/50 shadow-elevated' : ''}
           ${isCooked ? 'bg-bg-card opacity-60' : 'bg-bg-card opacity-100'}
           ${isDragging ? 'shadow-elevated ring-2 ring-primary/30' : 'border-border hover:border-border-secondary'}
@@ -335,7 +336,7 @@ function MealRow({ meal }) {
         <div
           {...attributes}
           {...listeners}
-          className="flex-shrink-0 cursor-grab active:cursor-grabbing touch-none p-0.5"
+          className="flex-shrink-0 cursor-grab active:cursor-grabbing touch-none p-0.5 select-none"
         >
           <svg
             className="w-5 h-5 text-text-secondary"
@@ -359,7 +360,7 @@ function MealRow({ meal }) {
           className={`
             flex-shrink-0 w-5 h-5 rounded
             border-2 flex items-center justify-center
-            transition-all duration-300 ease-out self-center
+            transition-colors duration-200 ease-out self-center
             ${
               hasMealName && !isSaving
                 ? 'border-border-checkbox hover:border-primary hover:scale-110 cursor-pointer'
