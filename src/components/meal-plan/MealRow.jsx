@@ -61,6 +61,9 @@ function MealRow({ meal }) {
   // Recipe URL modal state
   const [showUrlModal, setShowUrlModal] = useState(false);
 
+  // iOS autofill prevention
+  const [isReadOnly, setIsReadOnly] = useState(true);
+
   const inputRef = useRef(null);
   const debounceTimerRef = useRef(null);
 
@@ -397,11 +400,17 @@ function MealRow({ meal }) {
           type="text"
           value={mealName}
           onChange={handleChange}
-          onFocus={() => setIsFocused(true)}
+          onFocus={(e) => {
+            setIsFocused(true);
+            if (isReadOnly) {
+              setIsReadOnly(false);
+            }
+          }}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           placeholder="Add meal name..."
           disabled={isSaving}
+          readOnly={isReadOnly}
           className={`
             flex-1 max-w-[210px] sm:max-w-none bg-transparent outline-none
             placeholder-text-placeholder
@@ -417,7 +426,7 @@ function MealRow({ meal }) {
           aria-label={`Meal name for ${dayName}`}
           id={`meal-input-${meal.day_number}`}
           name="meal-name-input"
-          autoComplete="new-password"
+          autoComplete="off"
           autoCorrect="off"
           autoCapitalize="off"
           spellCheck="false"
