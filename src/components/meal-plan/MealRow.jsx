@@ -415,11 +415,13 @@ function MealRow({ meal }) {
           `}
           maxLength={100}
           aria-label={`Meal name for ${dayName}`}
-          name={`meal-${meal.day_number}`}
-          autoComplete="off"
+          id={`meal-input-${meal.day_number}`}
+          name="meal-name-input"
+          autoComplete="new-password"
           autoCorrect="off"
-          autoCapitalize="none"
+          autoCapitalize="off"
           spellCheck="false"
+          data-lpignore="true"
           data-form-type="other"
         />
 
